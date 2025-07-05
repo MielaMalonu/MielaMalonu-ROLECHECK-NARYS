@@ -6,9 +6,9 @@ const app = express();
 
 // Enhanced CORS configuration
 app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+    origin: '*',
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 
 // Health check endpoint
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
+    res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
 // Root endpoint for testing
@@ -83,8 +83,6 @@ async function checkDiscordRole(userId) {
         return { success: false, error: error.message };
     }
 }
-
-
 
 // Universal endpoint that handles both GET and POST for maximum BotGhost compatibility
 app.all("/api/check-role", async (req, res) => {
@@ -181,3 +179,17 @@ app.all("/api/check-role", async (req, res) => {
     
     console.log("Sending response:", response);
     res.json(response);
+});
+
+// Generic webhook endpoint
+app.post("/webhook", (req, res) => {
+    console.log("Received webhook payload:", JSON.stringify(req.body, null, 2));
+    res.status(200).json({ status: "Webhook received", timestamp: new Date().toISOString() });
+});
+
+// Start the server
+const PORT = process.env.PORT || 3000; // Use environment variable PORT or default to 3000
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+    console.log(`Access health check at http://localhost:${PORT}/health`);
+});
